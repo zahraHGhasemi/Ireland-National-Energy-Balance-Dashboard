@@ -1,7 +1,7 @@
 
 from dash import Input, Output, State, dcc
 from dash.exceptions import PreventUpdate
-from constant import DICT_FUELS, DICT_SECTORS, MAIN_FUELS
+from constant import DICT_FUELS, DICT_SECTORS, MAIN_FUELS, UNIT_DICT
 from read_data import get_df
 from utils import get_current_graph_data, create_chart_figure
 
@@ -15,6 +15,7 @@ def register_callbacks(app, melted_df):
         # Shared input
         Input('chart-type-dropdown', 'value'),
         Input('year-range-slider', 'value'),
+        Input('unit-selection-dropdown', 'value'),
 
         # System tab
         Input('sector-selection-dropdown', 'value'),
@@ -34,6 +35,7 @@ def register_callbacks(app, melted_df):
         active_tab,
         chart_type,
         year_range,
+        unit,
 
         # System
         selected_sector,
@@ -63,7 +65,7 @@ def register_callbacks(app, melted_df):
             fuel_show_details,
             melted_df
         )
-
+        filtered_df['value'] = filtered_df['value'] * UNIT_DICT.get(unit, 1)
         if filtered_df.empty:
             return {}
 
@@ -71,7 +73,8 @@ def register_callbacks(app, melted_df):
         return create_chart_figure(
             filtered_df,
             chart_type,
-            color=color
+            color=color,
+            unit=unit
         )
 
 

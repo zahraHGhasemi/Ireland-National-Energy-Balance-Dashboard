@@ -54,9 +54,16 @@ def dash_layout(min_year, max_year):
                         {'label': 'Stacked Area Chart', 'value': 'stacked_area'},
                         {'label': 'Line Chart', 'value': 'line'},
                         {'label': 'Share of Each (100%)', 'value': 'share_100'},
-                        {'label': 'Average Annual Growth Rate', 'value': 'avg_growth_rate'}
+                        # {'label': 'Average Annual Growth Rate', 'value': 'avg_growth_rate'}
                     ],
                     value='stacked_bar',
+                    clearable=False
+                ),
+                html.H3("Unit Selection"),
+                dcc.Dropdown(
+                    id='unit-selection-dropdown',
+                    options=['ktoe', 'TJ', 'TWh'],
+                    value='ktoe',
                     clearable=False
                 ),
 

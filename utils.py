@@ -49,7 +49,7 @@ def generate_color_palette(n_colors):
     
     return colors
 
-def create_chart_figure(df_filtered, chart_type, color):
+def create_chart_figure(df_filtered, chart_type, color, unit=None):
     
     # Sort the categories alphabetically so color mapping stays stable across chart types
     unique_categories = sorted(df_filtered[color].dropna().astype(str).unique(), key=str)
@@ -93,7 +93,7 @@ def create_chart_figure(df_filtered, chart_type, color):
         )
         if 'sector' in hover_cols and 'fuels' in hover_cols:
             fig.update_traces(hovertemplate='<b>Year:</b> %{x}<br><b>Sector:</b> %{customdata[0]}<br><b>Fuel:</b> %{customdata[1]}<br><b>Value:</b> %{y:.2f}<extra></extra>')
-        return fig.update_layout(barmode='stack', xaxis_title='Year', yaxis_title='Value', title = title)
+        return fig.update_layout(barmode='stack', xaxis_title='Year', yaxis_title= unit, title = title)
     elif chart_type == 'stacked_area':
         fig = px.area(
             df_filtered,
@@ -106,7 +106,7 @@ def create_chart_figure(df_filtered, chart_type, color):
         )
         if 'sector' in hover_cols and 'fuels' in hover_cols:
             fig.update_traces(hovertemplate='<b>Year:</b> %{x}<br><b>Sector:</b> %{customdata[0]}<br><b>Fuel:</b> %{customdata[1]}<br><b>Value:</b> %{y:.2f}<extra></extra>')
-        return fig.update_layout(xaxis_title='Year', yaxis_title='Value', title = title)
+        return fig.update_layout(xaxis_title='Year', yaxis_title= unit, title = title)
     elif chart_type == 'line':
         fig = px.line(
             df_filtered,
@@ -120,7 +120,7 @@ def create_chart_figure(df_filtered, chart_type, color):
         )
         if 'sector' in hover_cols and 'fuels' in hover_cols:
             fig.update_traces(hovertemplate='<b>Year:</b> %{x}<br><b>Sector:</b> %{customdata[0]}<br><b>Fuel:</b> %{customdata[1]}<br><b>Value:</b> %{y:.2f}<extra></extra>')
-        return fig.update_layout(xaxis_title='Year', yaxis_title='Value', title = title)
+        return fig.update_layout(xaxis_title='Year', yaxis_title= unit, title = title)
     elif chart_type == 'share_100':
         total_value_per_year = df_filtered.groupby('year')['value'].sum().reset_index()
         total_value_per_year.rename(columns={'value': 'total_year_value'}, inplace=True)
@@ -223,7 +223,7 @@ def prepare_fuel_tab_data(selected_subfuels, selected_fuel, fuel_show_details, y
         filtered_df = (
             filtered_df
             .groupby(
-                ['year', 'sector'],
+                ['year', 'sector', 'unit'],
                 as_index=False
             )['value']
             .sum()

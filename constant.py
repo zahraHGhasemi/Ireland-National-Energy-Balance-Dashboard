@@ -82,8 +82,13 @@ DICT_SECTORS = {
     "Public Thermal Power Plants (Input)": ["Public Thermal Power Plants (Input)"]
 
 }
-
+UNIT_DICT = {
+    'ktoe': 1,
+    'TJ': 41.87,
+    'TWh': 0.01163
+}   
 MAIN_FUELS = list(DICT_FUELS.keys())
 MAIN_SECTORS = list(DICT_SECTORS.keys())
 SYSTEM_TABLE_OPTIONS = [{'label': sector, 'value': sector} for sector in UNIQUE_SYSTEM_TABLE]
 SYSTEM_TABLE_OPTIONS.extend({'label': sector, 'value': sector} for sector in MAIN_SECTORS)
+UNIT = 'ktoe'

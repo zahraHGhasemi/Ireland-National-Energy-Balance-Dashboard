@@ -1,6 +1,6 @@
 
 import pandas as pd
-
+from constant import UNIT
 def get_df(filename):
     excel_file = pd.ExcelFile(filename)
     all_sheets = excel_file.sheet_names
@@ -29,7 +29,7 @@ def get_df(filename):
     # --- Handle Missing Values in 'value' column (from original 42b76ecf) ---
     melted_df['value'] = melted_df['value'].fillna(0)
     melted_df = melted_df[melted_df['value'] != 0]
-
+    melted_df['unit'] = UNIT
     return melted_df
 
 def get_year_min_max(filename):
