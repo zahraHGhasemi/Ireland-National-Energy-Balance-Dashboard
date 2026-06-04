@@ -1,0 +1,9 @@
+dash
+pandas
+numpy
+matplotlib
+seaborn
+plotly
+openpyxl
+textwrap
+colorsys
