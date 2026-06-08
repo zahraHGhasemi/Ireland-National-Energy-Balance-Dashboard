@@ -2,7 +2,6 @@
 from dash import Input, Output, State, dcc
 from dash.exceptions import PreventUpdate
 from constant import DICT_FUELS, DICT_SECTORS, MAIN_FUELS, UNIT_DICT
-from read_data import get_df
 from utils import get_current_graph_data, create_chart_figure
 
 def register_callbacks(app, melted_df):
@@ -183,5 +182,3 @@ def register_callbacks(app, melted_df):
         options = [{'label': subfuel, 'value': subfuel} for subfuel in unique_subfuels]
         value = [subfuel for subfuel in unique_subfuels]
         return options, value
-
-

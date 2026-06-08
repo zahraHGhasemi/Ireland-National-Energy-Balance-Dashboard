@@ -80,6 +80,70 @@ def create_chart_figure(df_filtered, chart_type, color, unit=None):
     hover_data_dict['year'] = True
     # Don't format value here, we'll handle it in the template
     hover_data_dict['value'] = True
+
+    if chart_type == 'caagr':
+        yearly_series_data = (
+            df_filtered
+            .groupby([color, 'year'], as_index=False)['value']
+            .sum()
+            .sort_values([color, 'year'])
+        )
+
+        caagr_rows = []
+        for series_title, series_data in yearly_series_data.groupby(color):
+            first_row = series_data.iloc[0]
+            last_row = series_data.iloc[-1]
+            n_years = last_row['year'] - first_row['year']
+
+            if first_row['value'] <= 0 or last_row['value'] <= 0 or n_years == 0:
+                continue
+
+            caagr = ((last_row['value'] / first_row['value']) ** (1 / n_years) - 1) * 100
+            caagr_rows.append({
+                color: series_title,
+                'caagr': round(caagr, 2),
+                'start_year': first_row['year'],
+                'end_year': last_row['year']
+            })
+
+        caagr_data = pd.DataFrame(caagr_rows)
+        if caagr_data.empty:
+            fig = px.bar(title="Not enough data to calculate CAAGR.")
+            return fig.update_layout(xaxis_title='Series', yaxis_title='CAAGR (%)')
+
+        fig = px.bar(
+            caagr_data,
+            x=color,
+            y='caagr',
+            color=color,
+            text='caagr',
+            color_discrete_sequence=color_palette,
+            category_orders=category_orders,
+            hover_data={
+                color: True,
+                'caagr': ':.2f',
+                'start_year': True,
+                'end_year': True
+            }
+        )
+        fig.update_traces(
+            texttemplate='%{text:.2f}%',
+            textposition='outside',
+            hovertemplate=(
+                '<b>Series:</b> %{x}<br>'
+                '<b>CAAGR:</b> %{y:.2f}%<br>'
+                '<extra></extra>'
+            )
+        )
+        return fig.update_layout(
+            showlegend=False,
+            xaxis_title='Series',
+            yaxis_title='CAAGR (%)',
+            title= {"text": "CAAGR (" + str(caagr_data['start_year'].min()) + "-" + str(caagr_data['end_year'].max()) + ")<br>",
+                    "x": 0.5,
+                    "xanchor": "center"
+                    }
+        )
     
     if chart_type == 'stacked_bar':
         fig = px.bar(
@@ -294,4 +358,24 @@ def get_current_graph_data(
 
     return pd.DataFrame()
 
+def calculate_cagr(df, year_col, value_col, start_year, end_year):
 
+    df_filtered = df[
+        (df[year_col] >= start_year) &
+        (df[year_col] <= end_year)
+    ].sort_values(year_col)
+
+    if len(df_filtered) < 2:
+        return None
+
+    start_value = df_filtered.iloc[0][value_col]
+    end_value = df_filtered.iloc[-1][value_col]
+
+    n_years = end_year - start_year
+
+    if start_value <= 0 or n_years == 0:
+        return None
+
+    cagr = ((end_value / start_value) ** (1 / n_years) - 1) * 100
+
+    return round(cagr, 2)

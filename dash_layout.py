@@ -1,6 +1,5 @@
 from dash import dcc
 from dash import html
-
 from constant import MAIN_FUELS, MAIN_SECTORS, SYSTEM_TABLE_OPTIONS
 
 def dash_layout(min_year, max_year):
@@ -54,7 +53,7 @@ def dash_layout(min_year, max_year):
                         {'label': 'Stacked Area Chart', 'value': 'stacked_area'},
                         {'label': 'Line Chart', 'value': 'line'},
                         {'label': 'Share of Each (100%)', 'value': 'share_100'},
-                        # {'label': 'Average Annual Growth Rate', 'value': 'avg_growth_rate'}
+                        {'label': 'CAAGR', 'value': 'caagr'}
                     ],
                     value='stacked_bar',
                     clearable=False
@@ -223,27 +222,34 @@ def dash_layout(min_year, max_year):
             # RIGHT PANEL (GRAPH AREA)
             # =====================================
             html.Div([
-
-                dcc.Graph(
-                    id='main-graph',
-                    style={"height": "80vh"}
-                )
+                
+                # 🔢 CAGR CARD (TOP)
+                # 📊 GRAPH (BOTTOM)
+                html.Div([
+                    dcc.Graph(
+                        id='main-graph',
+                        style={"height": "75vh"}
+                    )
+                ],
+                style={
+                    "backgroundColor": "white",
+                    "borderRadius": "12px",
+                    "boxShadow": "0 2px 6px rgba(0,0,0,0.1)",
+                    "padding": "15px"
+                })
 
             ],
             style={
-                "width": "70%",
-                "padding": "20px",
-                "backgroundColor": "white",
-                "borderRadius": "12px",
-                "boxShadow": "0 2px 6px rgba(0,0,0,0.1)"
+                "width": "72%",   # 👈 important (not 75% inside flex column)
+                "display": "flex",
+                "flexDirection": "column"
             })
 
         ],
         style={
             "display": "flex",
-            "gap": "20px",
-            "padding": "20px",
-            "alignItems": "flex-start"
+            "flexDirection": "row",
+            "gap": "20px"
         })
 
         ,

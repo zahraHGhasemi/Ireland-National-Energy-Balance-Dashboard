@@ -19,18 +19,25 @@ HEADERS = {
 
 
 def get_latest_excel_url(filename):
-    current_year = datetime.now().year
+    today = datetime.today()
+    current_year = today.year
+    current_month = today.month
 
     # Try recent possible paths
     candidate_urls = []
 
     for year in range(current_year, current_year - 3, -1):
-        for month in [5, 9]:  # interim (May), full (Sept)
-            candidate_urls.append(
+
+        max_month = current_month if year == current_year else 12
+
+        for month in range(max_month, 0, -1):
+
+            url = (
                 f"https://www.seai.ie/sites/default/files/"
                 f"{year}-{month:02d}/{filename}"
             )
 
+            candidate_urls.append(url)
     for url in candidate_urls:
         try:
             response = requests.head(
