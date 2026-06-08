@@ -1,3 +1,4 @@
+PAGE_URL = "https://www.seai.ie/data-and-insights/seai-statistics/key-publications/national-energy-balance"
 
 UNIQUE_SYSTEM_TABLE = ["Indigenous Production",
                   "Imports",
